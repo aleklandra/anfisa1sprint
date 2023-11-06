@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from ice_cream.models import IceCream
 
 ice_cream_catalog = [
     {
@@ -22,9 +23,15 @@ ice_cream_catalog = [
 
 
 def ice_cream_detail(request, pk):
-    template = 'ice_cream/detail.html'
-    context = {'ice_cream': ice_cream_catalog[pk]}
-    return render(request, template, context)
+    template_name = 'ice_cream/detail.html'
+    ice_cream = get_object_or_404(
+        IceCream.objects.filter(is_published=True, category__is_published=True),
+        pk=pk
+    )
+    context = {
+        'ice_cream': ice_cream,
+    }
+    return render(request, template_name, context)
 
 
 def ice_cream_list(request):
